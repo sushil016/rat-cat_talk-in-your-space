@@ -6,6 +6,7 @@ import { Menu, X, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
+import Image from "next/image"
 
 const navItems = [
   { label: "Features", href: "#features" },
@@ -29,18 +30,24 @@ export function Navbar() {
     >
       <nav
         ref={navRef}
-        className="relative flex items-center justify-between px-4 py-3 rounded-full bg-black/60 backdrop-blur-md border border-zinc-800"
+        className="theme-navbar theme-transition relative flex items-center justify-between px-4 py-3 rounded-full backdrop-blur-md border"
       >
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ffd063] to-[#00a6ff] flex items-center justify-center">
-            <span className="text-black font-bold text-sm">🐱</span>
+        <Link href="/" className="flex items-center gap-2">
+          <div className="relative w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+            <Image 
+              src="/logo.png" 
+              alt="Rat Cat Logo" 
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
           <span className="font-bold text-lg hidden sm:block">
-            <span className="text-[#ffd063]">Rat</span>
-            <span className="text-[#00a6ff]">Cat</span>
+            <span className="text-[var(--color-primary)]">Rat</span>
+            <span className="text-white/90">Cat</span>
           </span>
-        </a>
+        </Link>
 
         {/* Desktop Nav Items */}
         <div className="hidden md:flex items-center gap-1 relative">
@@ -48,14 +55,15 @@ export function Navbar() {
             <a
               key={item.label}
               href={item.href}
-              className="relative px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
+              className="theme-transition relative px-4 py-2 text-sm text-white/80 hover:text-[var(--color-primary)]"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               {hoveredIndex === index && (
                 <motion.div
                   layoutId="navbar-hover"
-                  className="absolute inset-0 bg-zinc-800 rounded-full"
+                  className="absolute inset-0 rounded-full"
+                  style={{ backgroundColor: "rgba(255, 239, 77, 0.10)" }}
                   initial={false}
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
@@ -72,14 +80,14 @@ export function Navbar() {
               <Link href="/dashboard">
                 <Button
                   size="sm"
-                  className="shimmer-btn bg-gradient-to-r from-[#ffd063] to-[#ffda7a] text-black hover:brightness-110 rounded-full px-5 border-0 font-medium"
+                  className="shimmer-btn rounded-full px-5 border-0 font-medium"
                 >
                   Dashboard
                 </Button>
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="p-2 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                className="theme-transition p-2 rounded-full text-white/80 hover:text-[var(--color-primary)]"
                 title="Sign out"
               >
                 {session.user?.image ? (
@@ -98,14 +106,14 @@ export function Navbar() {
           ) : (
             <>
               <Link href="/sign-in">
-                <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white hover:bg-zinc-800">
+                <Button variant="ghost" size="sm" className="theme-transition text-white/80 hover:text-[var(--color-primary)] hover:bg-[rgba(255,239,77,0.10)]">
                   Sign In
                 </Button>
               </Link>
               <Link href="/sign-up">
                 <Button
                   size="sm"
-                  className="shimmer-btn bg-gradient-to-r from-[#ffd063] to-[#ffda7a] text-black hover:brightness-110 rounded-full px-5 border-0 font-medium"
+                  className="shimmer-btn rounded-full px-5 border-0 font-medium"
                 >
                   Get Started
                 </Button>
@@ -130,30 +138,31 @@ export function Navbar() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="absolute top-full left-0 right-0 mt-2 p-4 rounded-2xl bg-zinc-900/95 backdrop-blur-md border border-zinc-800"
+          className="theme-transition absolute top-full left-0 right-0 mt-2 p-4 rounded-2xl backdrop-blur-md border"
+          style={{ backgroundColor: "rgba(76, 77, 80, 0.95)", borderColor: "rgba(255, 239, 77, 0.20)" }}
         >
           <div className="flex flex-col gap-2">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="px-4 py-3 text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
+                className="theme-transition px-4 py-3 text-sm text-white/80 hover:text-[var(--color-primary)] hover:bg-[rgba(255,239,77,0.10)] rounded-lg"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
-            <hr className="border-zinc-800 my-2" />
+            <hr className="my-2 border theme-divider" />
             {session ? (
               <>
                 <Link href="/dashboard">
-                  <Button className="w-full shimmer-btn bg-gradient-to-r from-[#ffd063] to-[#ffda7a] text-black hover:brightness-110 rounded-full border-0">
+                  <Button className="w-full shimmer-btn rounded-full border-0">
                     Dashboard
                   </Button>
                 </Link>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-zinc-400 hover:text-white"
+                  className="theme-transition w-full justify-start text-white/80 hover:text-[var(--color-primary)] hover:bg-[rgba(255,239,77,0.10)]"
                   onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   <LogOut size={16} className="mr-2" />
@@ -163,12 +172,12 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/sign-in">
-                  <Button variant="ghost" className="w-full justify-start text-zinc-400 hover:text-white">
+                  <Button variant="ghost" className="theme-transition w-full justify-start text-white/80 hover:text-[var(--color-primary)] hover:bg-[rgba(255,239,77,0.10)]">
                     Sign In
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button className="w-full shimmer-btn bg-gradient-to-r from-[#ffd063] to-[#ffda7a] text-black hover:brightness-110 rounded-full border-0">
+                  <Button className="w-full shimmer-btn rounded-full border-0">
                     Get Started
                   </Button>
                 </Link>

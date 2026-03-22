@@ -2,81 +2,89 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-
-const footerLinks = {
-  Product: ["Watch Rooms", "Voice Chat", "Sync Engine", "Media Player", "Mobile App"],
-  Resources: ["Help Center", "API Docs", "Blog", "Community", "Status"],
-  Company: ["About", "Careers", "Press", "Contact", "Partners"],
-  Legal: ["Privacy", "Terms", "Security", "DMCA Policy", "Cookies"],
-}
+import Image from "next/image"
+import Link from "next/link"
 
 export function Footer() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-50px" })
 
   return (
-    <footer ref={ref} className="border-t border-zinc-800 bg-black">
-      <div className="max-w-6xl mx-auto px-4 py-16">
+    <footer ref={ref} className="relative overflow-hidden" style={{ backgroundColor: "#161615" }}>
+      {/* Background image with overlay */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/homepage.jpeg"
+          alt="Footer background"
+          fill
+          className="object-cover opacity-10"
+        />
+        <div className="absolute inset-0" style={{ backgroundColor: "#161615", opacity: 0.85 }} />
+      </div>
+
+      {/* Subtle top border */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px" style={{ background: "linear-gradient(to right, transparent, rgba(255,239,77,0.3), transparent)" }} />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-2 md:grid-cols-5 gap-8"
+          className="flex flex-col items-center text-center"
         >
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <a href="#" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ffd063] to-[#00a6ff] flex items-center justify-center">
-                <span className="text-black font-bold text-sm">🐱</span>
-              </div>
-              <span className="font-bold text-lg">
-                <span className="text-[#ffd063]">Rat</span>
-                <span className="text-[#00a6ff]">Cat</span>
-              </span>
-            </a>
-            <p className="text-sm text-zinc-500 mb-4">Watch together, stay in sync.</p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 pulse-glow" />
-              <span className="text-xs text-zinc-400">All Systems Operational</span>
+          {/* Logo */}
+          <div className="flex items-center gap-2 mb-6">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+              style={{ backgroundColor: "rgba(255,239,77,0.1)", border: "1px solid rgba(255,239,77,0.2)" }}
+            >
+              <span style={{ color: "#FFEF4D" }}>RC</span>
             </div>
+            <span className="text-base font-semibold tracking-tight" style={{ color: "rgba(255,255,255,0.9)" }}>
+              RatCat
+            </span>
           </div>
+
+          {/* Tagline */}
+          <p className="text-sm mb-6 max-w-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+            Watch together. Stay in sync.
+          </p>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
-              <h4 className="text-sm font-semibold text-white mb-4">{title}</h4>
-              <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-zinc-500 hover:text-[#ffd063] transition-colors">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Bottom */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-16 pt-8 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4"
-        >
-          <p className="text-sm text-zinc-500">&copy; {new Date().getFullYear()} RatCat. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-zinc-500 hover:text-[#ffd063] transition-colors">
-              Twitter
-            </a>
-            <a href="#" className="text-sm text-zinc-500 hover:text-[#00a6ff] transition-colors">
-              Discord
-            </a>
-            <a href="#" className="text-sm text-zinc-500 hover:text-white transition-colors">
-              GitHub
-            </a>
+          <div className="flex items-center gap-6 mb-8">
+            {["Home", "Features", "Pricing", "About"].map((link) => (
+              <Link
+                key={link}
+                href="#"
+                className="text-xs transition-colors duration-200 hover:opacity-100"
+                style={{ color: "rgba(255,255,255,0.35)" }}
+              >
+                {link}
+              </Link>
+            ))}
           </div>
+
+          {/* Status */}
+          <div className="flex items-center gap-2 mb-8">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#22c55e" }} />
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+              All systems operational
+            </span>
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-8" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
+
+          {/* Copyright */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-8 text-xs"
+            style={{ color: "rgba(255,255,255,0.25)" }}
+          >
+            &copy; {new Date().getFullYear()} RatCat
+          </motion.p>
         </motion.div>
       </div>
     </footer>

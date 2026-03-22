@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
-import { Users, Radio, Mic, Film, Smile, MonitorPlay } from "lucide-react"
+import { Users, Radio, Mic, Film, MonitorPlay } from "lucide-react"
 
 const containerVariants = {
   hidden: {},
@@ -41,7 +41,7 @@ function RoomCodeAnimation() {
   return (
     <div className="flex items-center gap-3 mt-4">
       <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700">
-        <span className="text-xs text-zinc-500">Room:</span>
+        <span className="text-xs text-zinc-500">Space:</span>
         <motion.span
           key={code}
           initial={{ opacity: 0, y: 10 }}
@@ -177,11 +177,11 @@ export function BentoGrid() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Everything you need for the perfect{" "}
-            <span className="gradient-text">watch party</span>
+            Watch Together.{" "}
+            <span className="gradient-text">Anywhere.</span>
           </h2>
           <p className="text-zinc-400 max-w-2xl mx-auto">
-            From room creation to synchronized playback with voice chat — RatCat handles it all.
+            Create a space, invite friends, chat, voice chat, and watch in perfect sync — all in one place.
           </p>
         </motion.div>
 
@@ -192,7 +192,7 @@ export function BentoGrid() {
           animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-          {/* Watch Rooms */}
+          {/* Create Space */}
           <motion.div
             variants={itemVariants}
             className="md:col-span-2 group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-[#ffd063]/30 hover:scale-[1.02] transition-all duration-300 overflow-hidden"
@@ -203,16 +203,16 @@ export function BentoGrid() {
                 <div className="p-2 rounded-lg bg-[#ffd063]/10 w-fit mb-4">
                   <Users className="w-5 h-5 text-[#ffd063]" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Watch Rooms</h3>
+                <h3 className="text-xl font-semibold text-white mb-2">Create Space</h3>
                 <p className="text-zinc-400 text-sm">
-                  Create a room instantly, share the link, and bring up to 50 friends together.
+                  Set up a watch room in seconds. Share a link with friends and you're in.
                 </p>
               </div>
             </div>
             <RoomCodeAnimation />
           </motion.div>
 
-          {/* Sync Engine */}
+          {/* Connect with Friends */}
           <motion.div
             variants={itemVariants}
             className="group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-emerald-500/30 hover:scale-[1.02] transition-all duration-300"
@@ -221,12 +221,12 @@ export function BentoGrid() {
             <div className="p-2 rounded-lg bg-emerald-500/10 w-fit mb-4">
               <Radio className="w-5 h-5 text-emerald-400" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Sync Engine</h3>
-            <p className="text-zinc-400 text-sm">Ultra-low latency sync via WebSocket + WebRTC.</p>
+            <h3 className="text-lg font-semibold text-white mb-2">Connect with Friends</h3>
+            <p className="text-zinc-400 text-sm">Invite friends via link, join their space, or host your own watch party.</p>
             <SyncPulse />
           </motion.div>
 
-          {/* Voice & Text Chat */}
+          {/* Text Chat */}
           <motion.div
             variants={itemVariants}
             className="group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-[#00a6ff]/30 hover:scale-[1.02] transition-all duration-300"
@@ -235,40 +235,40 @@ export function BentoGrid() {
             <div className="p-2 rounded-lg bg-[#00a6ff]/10 w-fit mb-4">
               <Mic className="w-5 h-5 text-[#00a6ff]" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Voice & Text Chat</h3>
-            <p className="text-zinc-400 text-sm">Discord-style always-on voice, push-to-talk, text with reactions.</p>
-            <VoiceChatIndicator />
+            <h3 className="text-lg font-semibold text-white mb-2">Text Chat</h3>
+            <p className="text-zinc-400 text-sm">React with emojis, send messages, and keep the vibe going while you watch.</p>
+            <EmojiReactions />
           </motion.div>
 
-          {/* Media Sources */}
+          {/* Voice Chat */}
           <motion.div
             variants={itemVariants}
             className="group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-[#00a6ff]/30 hover:scale-[1.02] transition-all duration-300"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#00a6ff]/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="p-2 rounded-lg bg-[#00a6ff]/10 w-fit mb-4">
-              <Film className="w-5 h-5 text-[#00a6ff]" strokeWidth={1.5} />
+              <Mic className="w-5 h-5 text-[#00a6ff]" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Any Media Source</h3>
-            <p className="text-zinc-400 text-sm">YouTube, uploaded files (.mp4, .mkv), direct URLs, and more.</p>
-            <MediaTypeAnimation />
+            <h3 className="text-lg font-semibold text-white mb-2">Voice Chat</h3>
+            <p className="text-zinc-400 text-sm">Talk in real-time while you watch. Always-on voice with push-to-talk option.</p>
+            <VoiceChatIndicator />
           </motion.div>
 
-          {/* Reactions */}
+          {/* Watch Together */}
           <motion.div
             variants={itemVariants}
             className="group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-[#ffd063]/30 hover:scale-[1.02] transition-all duration-300"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#ffd063]/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="p-2 rounded-lg bg-[#ffd063]/10 w-fit mb-4">
-              <Smile className="w-5 h-5 text-[#ffd063]" strokeWidth={1.5} />
+              <Film className="w-5 h-5 text-[#ffd063]" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Reactions & Fun</h3>
-            <p className="text-zinc-400 text-sm">Floating emojis, chat bubbles, countdown timers, and polls.</p>
-            <EmojiReactions />
+            <h3 className="text-lg font-semibold text-white mb-2">Watch Together</h3>
+            <p className="text-zinc-400 text-sm">Perfectly synced playback for everyone. YouTube, MP4, MKV, and more.</p>
+            <MediaTypeAnimation />
           </motion.div>
 
-          {/* HD Playback */}
+          {/* Chill */}
           <motion.div
             variants={itemVariants}
             className="group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-[#ffd063]/30 hover:scale-[1.02] transition-all duration-300"
@@ -277,8 +277,8 @@ export function BentoGrid() {
             <div className="p-2 rounded-lg bg-[#ffd063]/10 w-fit mb-4">
               <MonitorPlay className="w-5 h-5 text-[#ffd063]" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Cinema-Quality Playback</h3>
-            <p className="text-zinc-400 text-sm">1080p to 4K, subtitles, multiple audio tracks, keyboard shortcuts.</p>
+            <h3 className="text-lg font-semibold text-white mb-2">Chill</h3>
+            <p className="text-zinc-400 text-sm">Sit back, relax, and enjoy. Subtitle support, PiP mode, and keyboard shortcuts.</p>
             <div className="flex items-center gap-2 mt-4">
               <span className="px-2 py-1 text-xs bg-zinc-800 rounded text-[#ffd063] border border-zinc-700">4K</span>
               <span className="px-2 py-1 text-xs bg-zinc-800 rounded text-zinc-400 border border-zinc-700">HDR</span>

@@ -4,6 +4,16 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --color-primary: #FFEF4D;
+  --color-bg-deep: #FFEF4D;
+  --color-text-on-dark: #FFFFFF;
+
+  /* Derived theme helpers */
+  --color-primary-10: rgba(255, 239, 77, 0.10);
+  --color-primary-20: rgba(255, 239, 77, 0.20);
+  --color-primary-30: rgba(255, 239, 77, 0.30);
+  --color-divider: rgba(255, 239, 77, 0.20);
+
   --background: oklch(0.05 0 0);
   --foreground: oklch(1 0 0);
   --card: oklch(0.1 0 0);
@@ -123,8 +133,51 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: #161615;
+    color: rgba(255, 255, 255, 0.9);
   }
+
+  h1, h2, h3 {
+    color: var(--color-primary);
+  }
+}
+
+/* Theme utilities (used to replace hardcoded colors) */
+.theme-transition {
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.theme-surface {
+  background-color: var(--color-bg-deep);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.theme-divider {
+  border-color: var(--color-divider);
+}
+
+/* Hero / CTA: yellow background, dark text */
+.theme-hero {
+  background-color: var(--color-primary);
+  color: var(--color-bg-deep);
+}
+
+.theme-hero :where(h1, h2, h3, p, span, a) {
+  color: var(--color-bg-deep);
+}
+
+/* Navbar: transparent with yellow hover/active */
+.theme-navbar {
+  background-color: transparent;
+  border-color: var(--color-divider);
+}
+
+.theme-navbar a {
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.theme-navbar a:hover {
+  color: var(--color-primary);
 }
 
 /* Noise overlay */
@@ -271,7 +324,7 @@
 
 /* Neon glow effects */
 .neon-glow-yellow {
-  box-shadow: 0 0 20px rgba(255, 208, 99, 0.15), 0 0 60px rgba(255, 208, 99, 0.05);
+  box-shadow: 0 0 20px rgba(255, 239, 77, 0.15), 0 0 60px rgba(255, 239, 77, 0.05);
 }
 
 .neon-glow-blue {
@@ -280,7 +333,7 @@
 
 /* Gradient text — neon yellow to blue */
 .gradient-text {
-  background: linear-gradient(135deg, #ffd063 0%, #ffda7a 30%, #00a6ff 70%, #0090dd 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #ffffff 45%, var(--color-bg-deep) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -325,9 +378,9 @@
 
 /* Chat — @mentions */
 .chat-mention {
-  color: #ffd063;
+  color: var(--color-primary);
   font-weight: 600;
-  background-color: rgba(255, 208, 99, 0.1);
+  background-color: var(--color-primary-10);
   border-radius: 3px;
   padding: 0 2px;
 }
@@ -345,11 +398,12 @@
 
 /* Chat — Links */
 .chat-link {
-  color: #00a6ff;
+  color: var(--color-primary);
   text-decoration: underline;
   text-underline-offset: 2px;
+  transition: color 0.3s ease-in-out;
 }
 
 .chat-link:hover {
-  color: #38bdf8;
+  color: rgba(255, 239, 77, 0.85);
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
+import Image from "next/image"
 
 const avatars = [
   "/professional-headshot-1.png",
@@ -104,13 +105,29 @@ export function Hero() {
   const { data: session } = useSession()
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-16 overflow-hidden">
+    <section className="theme-hero relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-16 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-black pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none">
+        <Image
+          src="/home.jpeg"
+          alt="Homepage background"
+          fill
+          priority
+          className="object-cover"
+        />
+        {/* Solid color overlay for #212226 background */}
+        <div className="absolute inset-0" style={{ backgroundColor: "#212226" }} />
+      </div>
 
       {/* Neon radial glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-[#ffd063]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-[#00a6ff]/5 rounded-full blur-3xl pointer-events-none" />
+      <div
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: "rgba(42, 66, 140, 0.10)" }}
+      />
+      <div
+        className="absolute top-1/3 left-1/3 w-[400px] h-[400px] rounded-full blur-3xl pointer-events-none"
+        style={{ backgroundColor: "rgba(42, 66, 140, 0.06)" }}
+      />
 
       {/* Floating Emojis */}
       <FloatingEmojis />
@@ -121,15 +138,16 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#ffd063]/10 border border-[#ffd063]/20 mb-8"
+          className="theme-transition inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
+          style={{ backgroundColor: "rgba(255, 239, 77, 0.15)", border: "1px solid rgba(255, 239, 77, 0.30)" }}
         >
           {/* <span className="text-base">✨</span> */}
-          <span className="text-sm text-[#ffd063]">Free to use — No signup required</span>
+          <span className="text-sm">Free to use — No signup required</span>
         </motion.div>
 
         {/* Headline */}
         <h1
-          className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-white mb-6"
+          className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight mb-6"
           style={{ fontFamily: "var(--font-display), sans-serif" }}
         >
           <span className="block overflow-hidden">
@@ -139,7 +157,7 @@ export function Hero() {
           </span>
           <span className="block overflow-hidden">
             <motion.span
-              className="block gradient-text"
+              className="block"
               variants={textRevealVariants}
               initial="hidden"
               animate="visible"
@@ -155,7 +173,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-8 leading-relaxed"
+          className="text-lg sm:text-xl max-w-2xl mx-auto mb-8 leading-relaxed"
         >
           Create a private watch space, share a YouTube link or upload any video, and enjoy perfectly synchronized
           playback with voice chat, text reactions, and subtitles.
@@ -181,9 +199,9 @@ export function Hero() {
           <Link href={session ? "/dashboard" : "/sign-up"}>
             <Button
               size="lg"
-              className="shimmer-btn bg-gradient-to-r from-[#ffd063] to-[#ffda7a] text-black hover:brightness-110 rounded-full px-8 h-13 text-base font-medium shadow-lg shadow-[#ffd063]/20 border-0"
+              className="shimmer-btn rounded-full px-8 h-13 text-base font-medium border-0 text-[#2A428C] bg-[#FFEF4D] hover:brightness-90"
             >
-              Create a Room
+              Create a Public Space
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
@@ -191,10 +209,11 @@ export function Hero() {
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full px-8 h-13 text-base font-medium border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-white hover:border-zinc-700 bg-transparent"
+              className="theme-transition rounded-full px-8 h-13 text-base font-medium"
+              style={{ borderColor: "rgba(255, 239, 77, 0.35)", color: "#FFEF4D", backgroundColor: "transparent" }}
             >
               <Play className="mr-2 w-4 h-4" />
-              Join a Room
+              Join a Space
             </Button>
           </Link>
         </motion.div>
@@ -223,9 +242,9 @@ export function Hero() {
               </motion.div>
             ))}
           </div> */}
-          <p className="text-sm text-zinc-500">
+          {/* <p className="text-sm text-zinc-500">
             <span className="text-[#ffd063] font-medium">1,000+</span> watch parties hosted this week
-          </p>
+          </p> */}
         </motion.div>
       </div>
     </section>
