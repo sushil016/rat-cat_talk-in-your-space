@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Copy, Check, Users, ArrowLeft, Loader2, Crown, Zap, WifiOff, Wifi } from "lucide-react"
+import { Copy, Check, Users, ArrowLeft, Loader2, Crown, Zap, WifiOff, Wifi, Film, Gamepad2, Code2, Globe2, Lock, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
@@ -25,6 +25,9 @@ interface RoomData {
     slug: string
     name: string
     theme: string
+    roomType: string
+    resourceUrl: string | null
+    isPublic: boolean
     status: string
     maxParticipants: number
     password: boolean
@@ -50,6 +53,7 @@ export default function RoomLobbyPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [copied, setCopied] = useState(false)
     const [socketConnected, setSocketConnected] = useState(false)
+    const [isTogglingPrivacy, setIsTogglingPrivacy] = useState(false)
     const { lobbyParticipants, setLobbyParticipants, setRoom: setStoreRoom, everyoneReady, setEveryoneReady } = useRoomStore()
 
     const isHost = room?.host.id === session?.user?.id
@@ -178,6 +182,32 @@ export default function RoomLobbyPage() {
         socket.emit("start-room", { roomCode: room?.code })
     }
 
+    async function togglePrivacy() {
+        if (!room || !isHost) return
+        setIsTogglingPrivacy(true)
+        try {
+            const res = await fetch(`/api/rooms/${room.code}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isPublic: !room.isPublic }),
+            })
+            if (res.ok) {
+                const updated = await res.json()
+                setRoom(prev => prev ? { ...prev, isPublic: updated.isPublic } : prev)
+                toast({
+                    title: updated.isPublic ? "Room is now Public" : "Room is now Private",
+                    description: updated.isPublic
+                        ? "Anyone can discover and join this room."
+                        : "Only people with the link can join.",
+                })
+            }
+        } catch {
+            toast({ title: "Error", description: "Failed to update privacy", variant: "destructive" })
+        } finally {
+            setIsTogglingPrivacy(false)
+        }
+    }
+
     function copyCode() {
         navigator.clipboard.writeText(shareUrl)
         setCopied(true)
@@ -240,10 +270,42 @@ export default function RoomLobbyPage() {
                             <span className="text-3xl">{style.emoji}</span>
                             <div>
                                 <h1 className="text-2xl font-bold text-white">{room.name}</h1>
-                                <p className="text-sm text-zinc-400">Space lobby...</p>
+                                <p className="text-sm text-zinc-400">
+                                    {room.roomType === "coding" ? "Coding space lobby" : "Chill space lobby"}
+                                </p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
+                            <Badge variant="outline" className={room.roomType === "coding" ? "text-[#00a6ff] border-[#00a6ff]/40" : "text-[#ffd063] border-[#ffd063]/40"}>
+                                {room.roomType === "coding" ? <Code2 className="w-3 h-3" /> : <Film className="w-3 h-3" />}
+                                {room.roomType === "coding" ? "Coding" : "Chill"}
+                            </Badge>
+                            {isHost ? (
+                                <button
+                                    onClick={togglePrivacy}
+                                    disabled={isTogglingPrivacy}
+                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition-all ${
+                                        room.isPublic
+                                            ? "text-[#00a6ff] border-[#00a6ff]/40 hover:bg-[#00a6ff]/10"
+                                            : "text-zinc-400 border-zinc-700 hover:bg-zinc-800"
+                                    }`}
+                                    title={room.isPublic ? "Click to make private" : "Click to make public"}
+                                >
+                                    {isTogglingPrivacy ? (
+                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                    ) : room.isPublic ? (
+                                        <Globe2 className="w-3 h-3" />
+                                    ) : (
+                                        <Lock className="w-3 h-3" />
+                                    )}
+                                    {room.isPublic ? "Public" : "Private"}
+                                </button>
+                            ) : (
+                                <Badge variant="outline" className={room.isPublic ? "text-[#00a6ff] border-[#00a6ff]/40" : "text-zinc-400 border-zinc-700"}>
+                                    {room.isPublic ? <Globe2 className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                                    {room.isPublic ? "Public" : "Private"}
+                                </Badge>
+                            )}
                             {/* Connection indicator */}
                             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${socketConnected
                                     ? "bg-green-500/10 border-green-500/30 text-green-400"
@@ -277,6 +339,20 @@ export default function RoomLobbyPage() {
                             {copied ? "Copied!" : "Copy Link"}
                         </Button>
                     </div>
+
+                    {room.resourceUrl && (
+                        <div className="mt-3 rounded-xl bg-black/30 p-3">
+                            <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Coding Link</p>
+                            <a
+                                href={room.resourceUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="block truncate text-sm text-[#00a6ff] hover:text-cyan-300"
+                            >
+                                {room.resourceUrl}
+                            </a>
+                        </div>
+                    )}
                 </div>
 
                 {/* Participants Grid */}
@@ -378,6 +454,34 @@ export default function RoomLobbyPage() {
                                 : everyoneReady || lobbyParticipants.length <= 1
                                     ? "Enter Space 🚀"
                                     : `Waiting for everyone (${lobbyParticipants.filter(p => p.isReady).length}/${lobbyParticipants.length})`}
+                        </Button>
+                    )}
+                </div>
+
+                {/* Direct entry buttons */}
+                <div className="flex gap-3 mt-3">
+                    <Button
+                        variant="outline"
+                        onClick={() => router.push(`/rooms/${roomCode}/watch`)}
+                        className="flex-1 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+                    >
+                        <Film className="w-4 h-4 mr-2" /> Watch Party
+                    </Button>
+                    <Button
+                        variant="outline"
+                        onClick={() => router.push(`/rooms/${roomCode}/space`)}
+                        className="flex-1 border-[#a855f7]/50 text-[#a855f7] hover:text-[#a855f7] hover:bg-[#a855f7]/10"
+                    >
+                        <Gamepad2 className="w-4 h-4 mr-2" /> Enter Space
+                    </Button>
+                    {isHost && (
+                        <Button
+                            variant="outline"
+                            onClick={() => router.push(`/rooms/${roomCode}/settings`)}
+                            className="border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-800"
+                            title="Room settings"
+                        >
+                            <Settings className="w-4 h-4" />
                         </Button>
                     )}
                 </div>

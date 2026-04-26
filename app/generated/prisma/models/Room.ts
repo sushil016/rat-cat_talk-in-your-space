@@ -48,6 +48,8 @@ export type RoomMinAggregateOutputType = {
   isPublic: boolean | null
   password: string | null
   maxParticipants: number | null
+  roomType: string | null
+  resourceUrl: string | null
   theme: string | null
   status: string | null
   createdAt: Date | null
@@ -71,6 +73,8 @@ export type RoomMaxAggregateOutputType = {
   isPublic: boolean | null
   password: string | null
   maxParticipants: number | null
+  roomType: string | null
+  resourceUrl: string | null
   theme: string | null
   status: string | null
   createdAt: Date | null
@@ -94,6 +98,8 @@ export type RoomCountAggregateOutputType = {
   isPublic: number
   password: number
   maxParticipants: number
+  roomType: number
+  resourceUrl: number
   theme: number
   status: number
   createdAt: number
@@ -131,6 +137,8 @@ export type RoomMinAggregateInputType = {
   isPublic?: true
   password?: true
   maxParticipants?: true
+  roomType?: true
+  resourceUrl?: true
   theme?: true
   status?: true
   createdAt?: true
@@ -154,6 +162,8 @@ export type RoomMaxAggregateInputType = {
   isPublic?: true
   password?: true
   maxParticipants?: true
+  roomType?: true
+  resourceUrl?: true
   theme?: true
   status?: true
   createdAt?: true
@@ -177,6 +187,8 @@ export type RoomCountAggregateInputType = {
   isPublic?: true
   password?: true
   maxParticipants?: true
+  roomType?: true
+  resourceUrl?: true
   theme?: true
   status?: true
   createdAt?: true
@@ -287,6 +299,8 @@ export type RoomGroupByOutputType = {
   isPublic: boolean
   password: string | null
   maxParticipants: number
+  roomType: string
+  resourceUrl: string | null
   theme: string
   status: string
   createdAt: Date
@@ -333,6 +347,8 @@ export type RoomWhereInput = {
   isPublic?: Prisma.BoolFilter<"Room"> | boolean
   password?: Prisma.StringNullableFilter<"Room"> | string | null
   maxParticipants?: Prisma.IntFilter<"Room"> | number
+  roomType?: Prisma.StringFilter<"Room"> | string
+  resourceUrl?: Prisma.StringNullableFilter<"Room"> | string | null
   theme?: Prisma.StringFilter<"Room"> | string
   status?: Prisma.StringFilter<"Room"> | string
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
@@ -359,6 +375,8 @@ export type RoomOrderByWithRelationInput = {
   isPublic?: Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
+  resourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   theme?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -388,6 +406,8 @@ export type RoomWhereUniqueInput = Prisma.AtLeast<{
   isPublic?: Prisma.BoolFilter<"Room"> | boolean
   password?: Prisma.StringNullableFilter<"Room"> | string | null
   maxParticipants?: Prisma.IntFilter<"Room"> | number
+  roomType?: Prisma.StringFilter<"Room"> | string
+  resourceUrl?: Prisma.StringNullableFilter<"Room"> | string | null
   theme?: Prisma.StringFilter<"Room"> | string
   status?: Prisma.StringFilter<"Room"> | string
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
@@ -414,6 +434,8 @@ export type RoomOrderByWithAggregationInput = {
   isPublic?: Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
+  resourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   theme?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -445,6 +467,8 @@ export type RoomScalarWhereWithAggregatesInput = {
   isPublic?: Prisma.BoolWithAggregatesFilter<"Room"> | boolean
   password?: Prisma.StringNullableWithAggregatesFilter<"Room"> | string | null
   maxParticipants?: Prisma.IntWithAggregatesFilter<"Room"> | number
+  roomType?: Prisma.StringWithAggregatesFilter<"Room"> | string
+  resourceUrl?: Prisma.StringNullableWithAggregatesFilter<"Room"> | string | null
   theme?: Prisma.StringWithAggregatesFilter<"Room"> | string
   status?: Prisma.StringWithAggregatesFilter<"Room"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Room"> | Date | string
@@ -468,6 +492,8 @@ export type RoomCreateInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -493,6 +519,8 @@ export type RoomUncheckedCreateInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -518,6 +546,8 @@ export type RoomUpdateInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -543,6 +573,8 @@ export type RoomUncheckedUpdateInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -568,6 +600,8 @@ export type RoomCreateManyInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -591,6 +625,8 @@ export type RoomUpdateManyMutationInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -613,6 +649,8 @@ export type RoomUncheckedUpdateManyInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -646,6 +684,8 @@ export type RoomCountOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   password?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
+  resourceUrl?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -675,6 +715,8 @@ export type RoomMaxOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   password?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
+  resourceUrl?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -698,6 +740,8 @@ export type RoomMinOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   password?: Prisma.SortOrder
   maxParticipants?: Prisma.SortOrder
+  roomType?: Prisma.SortOrder
+  resourceUrl?: Prisma.SortOrder
   theme?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -818,6 +862,8 @@ export type RoomCreateWithoutHostInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -842,6 +888,8 @@ export type RoomUncheckedCreateWithoutHostInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -895,6 +943,8 @@ export type RoomScalarWhereInput = {
   isPublic?: Prisma.BoolFilter<"Room"> | boolean
   password?: Prisma.StringNullableFilter<"Room"> | string | null
   maxParticipants?: Prisma.IntFilter<"Room"> | number
+  roomType?: Prisma.StringFilter<"Room"> | string
+  resourceUrl?: Prisma.StringNullableFilter<"Room"> | string | null
   theme?: Prisma.StringFilter<"Room"> | string
   status?: Prisma.StringFilter<"Room"> | string
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
@@ -918,6 +968,8 @@ export type RoomCreateWithoutParticipantsInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -942,6 +994,8 @@ export type RoomUncheckedCreateWithoutParticipantsInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -982,6 +1036,8 @@ export type RoomUpdateWithoutParticipantsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1006,6 +1062,8 @@ export type RoomUncheckedUpdateWithoutParticipantsInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1030,6 +1088,8 @@ export type RoomCreateWithoutMessagesInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -1054,6 +1114,8 @@ export type RoomUncheckedCreateWithoutMessagesInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -1094,6 +1156,8 @@ export type RoomUpdateWithoutMessagesInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1118,6 +1182,8 @@ export type RoomUncheckedUpdateWithoutMessagesInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1142,6 +1208,8 @@ export type RoomCreateManyHostInput = {
   isPublic?: boolean
   password?: string | null
   maxParticipants?: number
+  roomType?: string
+  resourceUrl?: string | null
   theme?: string
   status?: string
   createdAt?: Date | string
@@ -1164,6 +1232,8 @@ export type RoomUpdateWithoutHostInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1188,6 +1258,8 @@ export type RoomUncheckedUpdateWithoutHostInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1212,6 +1284,8 @@ export type RoomUncheckedUpdateManyWithoutHostInput = {
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   maxParticipants?: Prisma.IntFieldUpdateOperationsInput | number
+  roomType?: Prisma.StringFieldUpdateOperationsInput | string
+  resourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1274,6 +1348,8 @@ export type RoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isPublic?: boolean
   password?: boolean
   maxParticipants?: boolean
+  roomType?: boolean
+  resourceUrl?: boolean
   theme?: boolean
   status?: boolean
   createdAt?: boolean
@@ -1301,6 +1377,8 @@ export type RoomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isPublic?: boolean
   password?: boolean
   maxParticipants?: boolean
+  roomType?: boolean
+  resourceUrl?: boolean
   theme?: boolean
   status?: boolean
   createdAt?: boolean
@@ -1325,6 +1403,8 @@ export type RoomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isPublic?: boolean
   password?: boolean
   maxParticipants?: boolean
+  roomType?: boolean
+  resourceUrl?: boolean
   theme?: boolean
   status?: boolean
   createdAt?: boolean
@@ -1349,6 +1429,8 @@ export type RoomSelectScalar = {
   isPublic?: boolean
   password?: boolean
   maxParticipants?: boolean
+  roomType?: boolean
+  resourceUrl?: boolean
   theme?: boolean
   status?: boolean
   createdAt?: boolean
@@ -1362,7 +1444,7 @@ export type RoomSelectScalar = {
   playbackRate?: boolean
 }
 
-export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "slug" | "name" | "description" | "thumbnailUrl" | "isPublic" | "password" | "maxParticipants" | "theme" | "status" | "createdAt" | "updatedAt" | "hostId" | "mediaUrl" | "mediaType" | "mediaTitle" | "isPlaying" | "currentTime" | "playbackRate", ExtArgs["result"]["room"]>
+export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "slug" | "name" | "description" | "thumbnailUrl" | "isPublic" | "password" | "maxParticipants" | "roomType" | "resourceUrl" | "theme" | "status" | "createdAt" | "updatedAt" | "hostId" | "mediaUrl" | "mediaType" | "mediaTitle" | "isPlaying" | "currentTime" | "playbackRate", ExtArgs["result"]["room"]>
 export type RoomInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   host?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   participants?: boolean | Prisma.Room$participantsArgs<ExtArgs>
@@ -1393,6 +1475,8 @@ export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isPublic: boolean
     password: string | null
     maxParticipants: number
+    roomType: string
+    resourceUrl: string | null
     theme: string
     status: string
     createdAt: Date
@@ -1839,6 +1923,8 @@ export interface RoomFieldRefs {
   readonly isPublic: Prisma.FieldRef<"Room", 'Boolean'>
   readonly password: Prisma.FieldRef<"Room", 'String'>
   readonly maxParticipants: Prisma.FieldRef<"Room", 'Int'>
+  readonly roomType: Prisma.FieldRef<"Room", 'String'>
+  readonly resourceUrl: Prisma.FieldRef<"Room", 'String'>
   readonly theme: Prisma.FieldRef<"Room", 'String'>
   readonly status: Prisma.FieldRef<"Room", 'String'>
   readonly createdAt: Prisma.FieldRef<"Room", 'DateTime'>

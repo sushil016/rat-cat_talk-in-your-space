@@ -39,6 +39,40 @@ export async function GET(
     })
 }
 
+// PATCH: Update room settings (host only)
+export async function PATCH(
+    req: Request,
+    { params }: { params: Promise<{ code: string }> }
+) {
+    const session = await auth()
+    if (!session?.user?.id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const { code } = await params
+    const body = await req.json()
+
+    const room = await prisma.room.findFirst({
+        where: { OR: [{ code: code.toUpperCase() }, { slug: code }] },
+        select: { id: true, hostId: true },
+    })
+
+    if (!room) return NextResponse.json({ error: "Room not found" }, { status: 404 })
+    if (room.hostId !== session.user.id) return NextResponse.json({ error: "Only the host can update room settings" }, { status: 403 })
+
+    const updates: Record<string, unknown> = {}
+    if (typeof body.isPublic === "boolean") updates.isPublic = body.isPublic
+    if (typeof body.name === "string" && body.name.trim().length >= 2) updates.name = body.name.trim()
+
+    const updated = await prisma.room.update({
+        where: { id: room.id },
+        data: updates,
+        select: { id: true, isPublic: true, name: true },
+    })
+
+    return NextResponse.json(updated)
+}
+
 // POST: Join a room
 export async function POST(
     req: Request,

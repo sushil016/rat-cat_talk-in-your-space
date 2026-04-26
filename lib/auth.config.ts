@@ -16,14 +16,15 @@ export const authConfig = {
             const publicRoutes = ["/", "/sign-in", "/sign-up"]
             const isPublicRoute = publicRoutes.includes(pathname)
             const isApiAuth = pathname.startsWith("/api/auth")
+            const isPublicRoomsApi = pathname === "/api/rooms/public"
 
             // Redirect signed-in users away from auth pages
             if (isLoggedIn && (pathname === "/sign-in" || pathname === "/sign-up")) {
                 return Response.redirect(new URL("/dashboard", nextUrl))
             }
 
-            // Allow public routes and API auth
-            if (isPublicRoute || isApiAuth) return true
+            // Allow public routes and public APIs
+            if (isPublicRoute || isApiAuth || isPublicRoomsApi) return true
 
             // Protect everything else
             return isLoggedIn

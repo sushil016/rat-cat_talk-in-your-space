@@ -1,0 +1,3 @@
+ALTER TABLE "Room" ADD COLUMN "roomType" TEXT NOT NULL DEFAULT 'chill';
+ALTER TABLE "Room" ADD COLUMN "resourceUrl" TEXT;
+

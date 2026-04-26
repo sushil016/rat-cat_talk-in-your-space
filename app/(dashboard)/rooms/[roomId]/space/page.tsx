@@ -11,6 +11,8 @@ interface RoomData {
     id: string
     code: string
     name: string
+    roomType: string
+    resourceUrl: string | null
     host: { id: string; name: string; image: string }
 }
 
@@ -58,6 +60,8 @@ export default function SpacePage() {
             <GameSpace
                 roomCode={room.code}
                 roomId={roomId}
+                roomType={room.roomType}
+                resourceUrl={room.resourceUrl || undefined}
                 userId={session.user.id!}
                 userName={session.user.name || "Anonymous"}
                 userAvatar={session.user.image || undefined}

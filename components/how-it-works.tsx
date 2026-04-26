@@ -6,35 +6,35 @@ import { useRef, useState, useEffect } from "react"
 const steps = [
   {
     number: "01",
-    title: "You found something worth watching",
+    title: "You create a Coding or Chill room",
     description:
-      "Paste a YouTube link, drop a video file, or paste any URL. RatCat handles it all — no downloads, no Sign-ups.",
-    scene: "POST",
-    hint: "any link. any format.",
+      "Pick the room type. Add a GitHub repo link for coding rooms or a YouTube link for chill rooms. One click, one code.",
+    scene: "SPACE",
+    hint: "coding or chill.",
   },
   {
     number: "02",
-    title: "You create a space",
+    title: "Friends join the 2D space",
     description:
-      "One click. You get a code. Share it with your friends — they join in seconds, no accounts needed.",
-    scene: "SPACE",
-    hint: "simple. instant.",
+      "Share the room code or link. Everyone spawns in the virtual space and can move around with WASD or arrow keys.",
+    scene: "POST",
+    hint: "walk around. explore.",
   },
   {
     number: "03",
-    title: "Everyone hits play at the same time",
+    title: "Walk up to people and just talk",
     description:
-      "Your screens move together. Someone pauses? Everyone pauses. The sync is handled — you just enjoy.",
+      "Proximity voice activates automatically when you move close to someone. Volume fades as you walk away — no buttons.",
     scene: "SYNC",
-    hint: "perfectly in sync.",
+    hint: "no channels. just move.",
   },
   {
     number: "04",
-    title: "You talk. You react. You chill.",
+    title: "Enter a zone. Do stuff together.",
     description:
-      "Voice chat, emoji reactions, and text chat — all running in the background while the video plays.",
+      "Step into the Watch Hall to sync a video, the Pair Programming Pods to open a GitHub repo, or just chill at the café.",
     scene: "CHILL",
-    hint: "the good stuff.",
+    hint: "press E to enter.",
   },
 ]
 
@@ -179,7 +179,7 @@ export function HowItWorks() {
           className="text-sm uppercase tracking-[0.4em]"
           style={{ color: "rgba(255,239,77,0.3)" }}
         >
-          No signup. No downloads. Just watch.
+          Walk in. Talk. Create. Watch together.
         </p>
       </motion.div>
     </section>

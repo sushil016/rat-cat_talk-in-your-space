@@ -97,6 +97,8 @@ model Room {
   isPublic        Boolean  @default(false)
   password        String?
   maxParticipants Int      @default(10)
+  roomType        String   @default("chill") // "coding" | "chill"
+  resourceUrl     String?
   theme           String   @default("neutral") // "rat_den" | "cat_lounge" | "neutral"
   status          String   @default("waiting") // "waiting" | "live" | "ended"
   createdAt       DateTime @default(now())

@@ -47,6 +47,8 @@ interface SpacePlayer {
     y: number
     isMuted: boolean
     color: string
+    status?: string
+    activeZoneId?: string
 }
 const spacePlayers = new Map<string, Map<string, SpacePlayer>>() // roomCode → (userId → SpacePlayer)
 
@@ -350,6 +352,51 @@ io.on("connection", (socket) => {
 
     // ============= END SPACE =============
 
+    // ============= SPACE VOICE (proximity) =============
+
+    socket.on("space-voice-join", (data: { roomCode: string; userId: string; name: string }) => {
+        socket.to(`space:${data.roomCode}`).emit("space-voice-peer-joined", {
+            socketId: socket.id,
+            userId: data.userId,
+            name: data.name,
+        })
+    })
+
+    socket.on("space-voice-signal", (data: { roomCode: string; targetSocketId: string; signal: any }) => {
+        io.to(data.targetSocketId).emit("space-voice-signal", {
+            fromSocketId: socket.id,
+            signal: data.signal,
+        })
+    })
+
+    socket.on("space-voice-leave", (data: { roomCode: string }) => {
+        socket.to(`space:${data.roomCode}`).emit("space-voice-peer-left", {
+            socketId: socket.id,
+        })
+    })
+
+    socket.on("space-camera-state", (data: { roomCode: string; cameraOn: boolean }) => {
+        socket.to(`space:${data.roomCode}`).emit("space-camera-state", {
+            socketId: socket.id,
+            cameraOn: data.cameraOn,
+        })
+    })
+
+    // Set player status (zone activity)
+    socket.on("space-set-status", (data: { roomCode: string; userId: string; status: string; activeZoneId?: string }) => {
+        const { roomCode, userId, status, activeZoneId } = data
+        const room = spacePlayers.get(roomCode)
+        if (!room) return
+        const player = room.get(userId)
+        if (!player) return
+        player.status = status || undefined
+        player.activeZoneId = activeZoneId
+        room.set(userId, player)
+        io.to(`space:${roomCode}`).emit("space-player-moved", player)
+    })
+
+    // ============= END SPACE VOICE =============
+
     // Start the room
     socket.on("start-room", (data: { roomCode: string }) => {
         io.to(data.roomCode).emit("room-started")
@@ -372,6 +419,7 @@ io.on("connection", (socket) => {
         for (const [roomCode, players] of spacePlayers.entries()) {
             for (const [userId, p] of players.entries()) {
                 if (p.socketId === socket.id) {
+                    io.to(`space:${roomCode}`).emit("space-voice-peer-left", { socketId: socket.id })
                     handleSpaceLeave(socket.id, roomCode, userId)
                     break
                 }

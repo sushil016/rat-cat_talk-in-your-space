@@ -152,7 +152,7 @@ export function Hero() {
         >
           <span className="block overflow-hidden">
             <motion.span className="block" variants={textRevealVariants} initial="hidden" animate="visible" custom={0}>
-              Create Space.
+              Your Space.
             </motion.span>
           </span>
           <span className="block overflow-hidden">
@@ -163,7 +163,7 @@ export function Hero() {
               animate="visible"
               custom={1}
             >
-              Chill, Watch in Sync.
+              Code. Watch. Chill.
             </motion.span>
           </span>
         </h1>
@@ -175,8 +175,8 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-lg sm:text-xl max-w-2xl mx-auto mb-8 leading-relaxed"
         >
-          Create a private watch space, share a YouTube link or upload any video, and enjoy perfectly synchronized
-          playback with voice chat, text reactions, and subtitles.
+          A 2D virtual space where you walk up to people and talk using proximity voice. Watch synced videos,
+          pair program with a GitHub repo, or just hang out — together in real time.
         </motion.p>
 
         {/* Sync Indicator */}
@@ -196,16 +196,16 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.7 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
-          <Link href={session ? "/dashboard" : "/sign-up"}>
+          <Link href={session ? "/rooms/new" : "/sign-up"}>
             <Button
               size="lg"
               className="shimmer-btn rounded-full px-8 h-13 text-base font-medium border-0 text-[#2A428C] bg-[#FFEF4D] hover:brightness-90"
             >
-              Create a Public Space
+              Create a Space
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
-          <Link href={session ? "/dashboard" : "/sign-in"}>
+          <Link href={session ? "/rooms" : "/sign-in"}>
             <Button
               variant="outline"
               size="lg"
@@ -213,7 +213,7 @@ export function Hero() {
               style={{ borderColor: "rgba(255, 239, 77, 0.35)", color: "#FFEF4D", backgroundColor: "transparent" }}
             >
               <Play className="mr-2 w-4 h-4" />
-              Join a Space
+              Browse Spaces
             </Button>
           </Link>
         </motion.div>

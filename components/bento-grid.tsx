@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef, useEffect, useState } from "react"
-import { Users, Radio, Mic, Film, MonitorPlay } from "lucide-react"
+import { Users, Radio, Mic, Film, MonitorPlay, MapPin } from "lucide-react"
 
 const containerVariants = {
   hidden: {},
@@ -177,11 +177,11 @@ export function BentoGrid() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Watch Together.{" "}
-            <span className="gradient-text">Anywhere.</span>
+            Everything in one space.{" "}
+            <span className="gradient-text">All together.</span>
           </h2>
           <p className="text-zinc-400 max-w-2xl mx-auto">
-            Create a space, invite friends, chat, voice chat, and watch in perfect sync — all in one place.
+            A 2D virtual world with proximity voice, synced video, coding rooms, and real-time chat — built to feel like being in the same room.
           </p>
         </motion.div>
 
@@ -192,7 +192,7 @@ export function BentoGrid() {
           animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-          {/* Create Space */}
+          {/* 2D Virtual Space — large card */}
           <motion.div
             variants={itemVariants}
             className="md:col-span-2 group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-[#ffd063]/30 hover:scale-[1.02] transition-all duration-300 overflow-hidden"
@@ -201,18 +201,19 @@ export function BentoGrid() {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="p-2 rounded-lg bg-[#ffd063]/10 w-fit mb-4">
-                  <Users className="w-5 h-5 text-[#ffd063]" strokeWidth={1.5} />
+                  <MapPin className="w-5 h-5 text-[#ffd063]" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Create Space</h3>
+                <h3 className="text-xl font-semibold text-white mb-2">2D Virtual Space</h3>
                 <p className="text-zinc-400 text-sm">
-                  Set up a watch room in seconds. Share a link with friends and you're in.
+                  Navigate a virtual office or lounge with WASD. Walk into zones to code together, watch videos,
+                  or just hang out. Proximity voice activates automatically when you&apos;re close to someone.
                 </p>
               </div>
             </div>
             <RoomCodeAnimation />
           </motion.div>
 
-          {/* Connect with Friends */}
+          {/* Proximity Voice */}
           <motion.div
             variants={itemVariants}
             className="group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-emerald-500/30 hover:scale-[1.02] transition-all duration-300"
@@ -221,12 +222,12 @@ export function BentoGrid() {
             <div className="p-2 rounded-lg bg-emerald-500/10 w-fit mb-4">
               <Radio className="w-5 h-5 text-emerald-400" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Connect with Friends</h3>
-            <p className="text-zinc-400 text-sm">Invite friends via link, join their space, or host your own watch party.</p>
+            <h3 className="text-lg font-semibold text-white mb-2">Proximity Voice</h3>
+            <p className="text-zinc-400 text-sm">Voice activates when you walk near someone. Move away to fade out — no channels, no buttons.</p>
             <SyncPulse />
           </motion.div>
 
-          {/* Text Chat */}
+          {/* Text Chat & Reactions */}
           <motion.div
             variants={itemVariants}
             className="group relative p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-[#00a6ff]/30 hover:scale-[1.02] transition-all duration-300"
@@ -235,8 +236,8 @@ export function BentoGrid() {
             <div className="p-2 rounded-lg bg-[#00a6ff]/10 w-fit mb-4">
               <Mic className="w-5 h-5 text-[#00a6ff]" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Text Chat</h3>
-            <p className="text-zinc-400 text-sm">React with emojis, send messages, and keep the vibe going while you watch.</p>
+            <h3 className="text-lg font-semibold text-white mb-2">Chat & Reactions</h3>
+            <p className="text-zinc-400 text-sm">Send messages, react with emojis, and keep the energy going while you watch or code.</p>
             <EmojiReactions />
           </motion.div>
 
@@ -249,8 +250,8 @@ export function BentoGrid() {
             <div className="p-2 rounded-lg bg-[#00a6ff]/10 w-fit mb-4">
               <Mic className="w-5 h-5 text-[#00a6ff]" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Voice Chat</h3>
-            <p className="text-zinc-400 text-sm">Talk in real-time while you watch. Always-on voice with push-to-talk option.</p>
+            <h3 className="text-lg font-semibold text-white mb-2">Room Voice Chat</h3>
+            <p className="text-zinc-400 text-sm">Full-room voice in the watch room. Always-on, low latency — hear everyone as you watch.</p>
             <VoiceChatIndicator />
           </motion.div>
 
@@ -277,8 +278,8 @@ export function BentoGrid() {
             <div className="p-2 rounded-lg bg-[#ffd063]/10 w-fit mb-4">
               <MonitorPlay className="w-5 h-5 text-[#ffd063]" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Chill</h3>
-            <p className="text-zinc-400 text-sm">Sit back, relax, and enjoy. Subtitle support, PiP mode, and keyboard shortcuts.</p>
+            <h3 className="text-lg font-semibold text-white mb-2">Chill Mode</h3>
+            <p className="text-zinc-400 text-sm">Sit back and relax. Subtitle support, PiP mode, and keyboard shortcuts included.</p>
             <div className="flex items-center gap-2 mt-4">
               <span className="px-2 py-1 text-xs bg-zinc-800 rounded text-[#ffd063] border border-zinc-700">4K</span>
               <span className="px-2 py-1 text-xs bg-zinc-800 rounded text-zinc-400 border border-zinc-700">HDR</span>

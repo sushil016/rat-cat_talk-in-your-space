@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
 function generateRoomCode(): string {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     let code = ""
     // Format: 3 letters + 3 numbers (e.g., RAT123, CAT456)
     const prefixes = ["RAT", "CAT", "MOV", "FLX", "VID", "PLY"]
@@ -24,6 +23,29 @@ function generateSlug(name: string): string {
     return `${base}-${suffix}`
 }
 
+const allowedCodingHosts = ["github.com", "leetcode.com", "codeforces.com"]
+
+function normalizeRoomType(value: unknown): "coding" | "chill" {
+    return value === "coding" ? "coding" : "chill"
+}
+
+function validateCodingResourceUrl(value: unknown): string | null {
+    if (typeof value !== "string" || value.trim().length === 0) return null
+
+    try {
+        const trimmed = value.trim()
+        const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+        const url = new URL(candidate)
+        const hostname = url.hostname.replace(/^www\./, "")
+        if (url.protocol !== "https:" || !allowedCodingHosts.some((host) => hostname === host || hostname.endsWith(`.${host}`))) {
+            return null
+        }
+        return url.toString()
+    } catch {
+        return null
+    }
+}
+
 // GET: List rooms for current user
 export async function GET() {
     const session = await auth()
@@ -36,6 +58,7 @@ export async function GET() {
             OR: [
                 { hostId: session.user.id },
                 { participants: { some: { userId: session.user.id } } },
+                { isPublic: true },
             ],
         },
         include: {
@@ -56,10 +79,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { name, password, maxParticipants, theme, isPublic } = body
+    const { name, password, maxParticipants, theme, isPublic, roomType: rawRoomType, resourceUrl: rawResourceUrl } = body
 
     if (!name || name.trim().length < 2) {
         return NextResponse.json({ error: "Room name must be at least 2 characters" }, { status: 400 })
+    }
+
+    const roomType = normalizeRoomType(rawRoomType)
+    const resourceUrl = roomType === "coding" ? validateCodingResourceUrl(rawResourceUrl) : null
+
+    if (roomType === "coding" && rawResourceUrl && !resourceUrl) {
+        return NextResponse.json({ error: "Coding rooms only support GitHub, LeetCode, or Codeforces HTTPS links" }, { status: 400 })
     }
 
     // Generate unique code (retry if collision)
@@ -81,7 +111,9 @@ export async function POST(req: Request) {
             name: name.trim(),
             password: password || null,
             maxParticipants: maxParticipants || 10,
-            theme: theme || "neutral",
+            roomType,
+            resourceUrl,
+            theme: theme || (roomType === "coding" ? "rat_den" : "cat_lounge"),
             isPublic: isPublic || false,
             hostId: session.user.id,
             status: "waiting",

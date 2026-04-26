@@ -1118,6 +1118,8 @@ export const RoomScalarFieldEnum = {
   isPublic: 'isPublic',
   password: 'password',
   maxParticipants: 'maxParticipants',
+  roomType: 'roomType',
+  resourceUrl: 'resourceUrl',
   theme: 'theme',
   status: 'status',
   createdAt: 'createdAt',

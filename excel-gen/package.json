@@ -1,0 +1,8 @@
+{
+  "name": "cav-report-generator",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "docx": "^8.5.0"
+  }
+}
