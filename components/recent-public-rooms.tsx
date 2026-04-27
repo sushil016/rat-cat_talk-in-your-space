@@ -29,8 +29,11 @@ export function RecentPublicRooms() {
   useEffect(() => {
     async function loadRooms() {
       try {
-        const res = await fetch("/api/rooms/public")
-        if (res.ok) setRooms(await res.json())
+        const res = await fetch("/api/rooms/public?skip=0&take=6")
+        if (res.ok) {
+          const data = await res.json()
+          setRooms(Array.isArray(data) ? data : data.rooms)
+        }
       } finally {
         setIsLoading(false)
       }

@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Plus, LogIn, Users, Film, Zap, ArrowRight, Crown, Loader2 } from "lucide-react"
+import { Plus, LogIn, Users, Film, Zap, ArrowRight, Crown, Loader2, Globe2, Code2 } from "lucide-react"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { useEffect, useRef, useState } from "react"
@@ -26,6 +26,19 @@ interface RoomItem {
     _count: { participants: number }
 }
 
+interface PublicRoom {
+    id: string
+    code: string
+    slug: string
+    name: string
+    roomType: string
+    status: string
+    maxParticipants: number
+    updatedAt: string
+    host: { id: string; name: string | null; username: string | null; image: string | null }
+    _count: { participants: number }
+}
+
 const statusColors: Record<string, { bg: string; text: string; dot: string }> = {
     waiting: { bg: "bg-amber-500/10", text: "text-amber-400", dot: "bg-amber-400" },
     live: { bg: "bg-green-500/10", text: "text-green-400", dot: "bg-green-400" },
@@ -45,6 +58,12 @@ export default function DashboardPage() {
 
     const [rooms, setRooms] = useState<RoomItem[]>([])
     const [roomsLoading, setRoomsLoading] = useState(true)
+
+    const [communityRooms, setCommunityRooms] = useState<PublicRoom[]>([])
+    const [communityTotal, setCommunityTotal] = useState(0)
+    const [communityLoading, setCommunityLoading] = useState(true)
+    const [communityLoadingMore, setCommunityLoadingMore] = useState(false)
+    const COMMUNITY_PAGE_SIZE = 6
 
     useEffect(() => {
         async function checkNewUser() {
@@ -98,6 +117,39 @@ export default function DashboardPage() {
             setRoomsLoading(false)
         }
     }, [session?.user?.id])
+
+    // Fetch community (public) rooms
+    useEffect(() => {
+        async function fetchCommunity() {
+            try {
+                const res = await fetch(`/api/rooms/public?skip=0&take=${COMMUNITY_PAGE_SIZE}`)
+                if (res.ok) {
+                    const data = await res.json()
+                    setCommunityRooms(data.rooms)
+                    setCommunityTotal(data.total)
+                }
+            } catch {
+                // Silent fail
+            } finally {
+                setCommunityLoading(false)
+            }
+        }
+        fetchCommunity()
+    }, [])
+
+    async function loadMoreCommunity() {
+        setCommunityLoadingMore(true)
+        try {
+            const res = await fetch(`/api/rooms/public?skip=${communityRooms.length}&take=${COMMUNITY_PAGE_SIZE}`)
+            if (res.ok) {
+                const data = await res.json()
+                setCommunityRooms(prev => [...prev, ...data.rooms])
+                setCommunityTotal(data.total)
+            }
+        } catch { } finally {
+            setCommunityLoadingMore(false)
+        }
+    }
 
     return (
         <div className="max-w-5xl mx-auto">
@@ -311,6 +363,108 @@ export default function DashboardPage() {
                             </Link>
                         )}
                     </div>
+                )}
+            </motion.div>
+
+            {/* Community Rooms */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="mt-12"
+            >
+                <div className="flex items-center gap-2 mb-4">
+                    <Globe2 className="w-5 h-5 text-[#00a6ff]" />
+                    <h2 className="text-xl font-semibold text-white">Community Spaces</h2>
+                    {communityTotal > 0 && (
+                        <span className="text-xs text-zinc-500 ml-1">({communityTotal} open)</span>
+                    )}
+                </div>
+
+                {communityLoading ? (
+                    <Card className="bg-zinc-900 border-zinc-800">
+                        <CardContent className="py-8 flex items-center justify-center">
+                            <Loader2 className="w-6 h-6 text-[#00a6ff] animate-spin" />
+                        </CardContent>
+                    </Card>
+                ) : communityRooms.length === 0 ? (
+                    <Card className="bg-zinc-900 border-zinc-800">
+                        <CardContent className="py-8 text-center">
+                            <Globe2 className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
+                            <p className="text-zinc-500 text-sm">No public spaces right now.</p>
+                            <p className="text-zinc-600 text-xs mt-1">Create a public space and invite the community!</p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {communityRooms.map((room, i) => {
+                                const sc = statusColors[room.status] || statusColors.ended
+                                const isCoding = room.roomType === "coding"
+                                return (
+                                    <motion.div
+                                        key={room.id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.3, delay: 0.05 * i }}
+                                    >
+                                        <Link href={`/rooms/${room.code}/space`}>
+                                            <Card className="bg-zinc-900 border-zinc-800 hover:border-[#00a6ff]/40 transition-all cursor-pointer group h-full">
+                                                <CardContent className="py-4 flex items-center gap-3">
+                                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isCoding ? "bg-[#00a6ff]/10" : "bg-[#ffd063]/10"}`}>
+                                                        {isCoding
+                                                            ? <Code2 className="w-5 h-5 text-[#00a6ff]" />
+                                                            : <Film className="w-5 h-5 text-[#ffd063]" />}
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 mb-0.5">
+                                                            <h3 className="font-semibold text-sm text-white truncate group-hover:text-[#00a6ff] transition-colors">
+                                                                {room.name}
+                                                            </h3>
+                                                            <Badge variant="outline" className={`${sc.bg} ${sc.text} border-0 text-[10px] px-1.5 py-0 shrink-0`}>
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${sc.dot} mr-1`} />
+                                                                {room.status}
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-xs text-zinc-500">
+                                                            <span className="flex items-center gap-1">
+                                                                <Users className="w-3 h-3" />
+                                                                {room._count.participants}/{room.maxParticipants}
+                                                            </span>
+                                                            <span className="font-mono text-zinc-600">{room.code}</span>
+                                                            <span>{formatDistanceToNow(new Date(room.updatedAt), { addSuffix: true })}</span>
+                                                        </div>
+                                                    </div>
+                                                    <Avatar className="w-7 h-7 border border-zinc-700 shrink-0">
+                                                        <AvatarImage src={room.host.image || undefined} />
+                                                        <AvatarFallback className="bg-zinc-800 text-xs text-zinc-400">
+                                                            {room.host.name?.charAt(0)?.toUpperCase() || "?"}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                </CardContent>
+                                            </Card>
+                                        </Link>
+                                    </motion.div>
+                                )
+                            })}
+                        </div>
+
+                        {communityRooms.length < communityTotal && (
+                            <div className="mt-4 flex justify-center">
+                                <Button
+                                    variant="outline"
+                                    onClick={loadMoreCommunity}
+                                    disabled={communityLoadingMore}
+                                    className="border-zinc-700 text-zinc-400 hover:text-white hover:border-[#00a6ff]/50"
+                                >
+                                    {communityLoadingMore
+                                        ? <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                        : null}
+                                    Load more ({communityTotal - communityRooms.length} remaining)
+                                </Button>
+                            </div>
+                        )}
+                    </>
                 )}
             </motion.div>
         </div>

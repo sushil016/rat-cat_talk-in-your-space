@@ -13,6 +13,10 @@ const ICE_SERVERS = [
     { urls: "stun:stun.l.google.com:19302" },
     { urls: "stun:stun1.l.google.com:19302" },
     { urls: "stun:stun2.l.google.com:19302" },
+    // TURN fallback — required for symmetric NAT (common in production)
+    { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" },
 ]
 
 interface PeerConnection {
@@ -70,6 +74,12 @@ export function VoiceChannel() {
                 name: session.user.name || "User",
             })
 
+            // Clear any stale listeners before registering — prevents double-firing on re-joins
+            socket.off("voice-peer-joined")
+            socket.off("voice-signal")
+            socket.off("voice-peer-left")
+            socket.off("voice-mute-update")
+
             // When a new peer joins, we (as an existing member) create an initiator peer
             socket.on("voice-peer-joined", (data: { socketId: string; userId: string; name: string }) => {
                 if (peersRef.current.has(data.socketId)) return
@@ -90,7 +100,6 @@ export function VoiceChannel() {
                 if (conn) {
                     conn.peer.signal(data.signal)
                 } else {
-                    // We don't know this peer yet — they initiated. Create a non-initiator peer.
                     const newConn = createPeer(data.fromSocketId, "", "", stream, false)
                     newConn.peer.signal(data.signal)
                 }

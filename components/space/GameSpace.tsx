@@ -18,6 +18,10 @@ const ICE_SERVERS = [
     { urls: "stun:stun.l.google.com:19302" },
     { urls: "stun:stun1.l.google.com:19302" },
     { urls: "stun:stun2.l.google.com:19302" },
+    // TURN fallback — required for symmetric NAT in production
+    { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" },
 ]
 
 interface SpacePlayer {
@@ -566,6 +570,217 @@ function OtherPlayer({
     )
 }
 
+// ── Camera Corner Overlay ──
+function CameraCorner({
+    localStream,
+    cameraOn,
+    isMuted,
+    localSpeaking,
+    userName,
+    myColor,
+    peerStreams,
+    peersWithCamera,
+    nearbySocketIds,
+    speakingPeers,
+    others,
+}: {
+    localStream: MediaStream | null
+    cameraOn: boolean
+    isMuted: boolean
+    localSpeaking: boolean
+    userName: string
+    myColor: string
+    peerStreams: Map<string, MediaStream>
+    peersWithCamera: Set<string>
+    nearbySocketIds: Set<string>
+    speakingPeers: Set<string>
+    others: SpacePlayer[]
+}) {
+    const localVideoRef = useRef<HTMLVideoElement>(null)
+
+    useEffect(() => {
+        if (localVideoRef.current && localStream && cameraOn) {
+            localVideoRef.current.srcObject = localStream
+        }
+    }, [localStream, cameraOn])
+
+    const remoteTiles = Array.from(nearbySocketIds).filter(
+        sid => peersWithCamera.has(sid) && peerStreams.has(sid)
+    )
+
+    const hasTiles = cameraOn || remoteTiles.length > 0
+    if (!hasTiles) return null
+
+    return (
+        <div style={{
+            position: "absolute",
+            bottom: 76,
+            right: 180,
+            zIndex: 300,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            alignItems: "flex-end",
+            maxHeight: "50vh",
+            overflowY: "auto",
+        }}>
+            {/* Local camera tile */}
+            {cameraOn && (
+                <div style={{
+                    position: "relative",
+                    width: 144,
+                    height: 100,
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    background: "#111",
+                    border: `2px solid ${localSpeaking ? "#22c55e" : myColor + "60"}`,
+                    boxShadow: localSpeaking ? "0 0 10px rgba(34,197,94,0.5)" : "0 2px 12px rgba(0,0,0,0.6)",
+                    flexShrink: 0,
+                    transition: "border 0.15s, box-shadow 0.15s",
+                }}>
+                    <video
+                        ref={localVideoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scaleX(-1)" }}
+                    />
+                    {/* Name + mic */}
+                    <div style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        padding: "4px 6px",
+                        background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                    }}>
+                        {isMuted && (
+                            <span style={{ fontSize: 10, color: "#ef4444" }}>🎙️✗</span>
+                        )}
+                        <span style={{
+                            fontSize: 10,
+                            fontWeight: 700,
+                            color: "white",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            flex: 1,
+                        }}>{userName} (you)</span>
+                    </div>
+                    {localSpeaking && (
+                        <div style={{
+                            position: "absolute",
+                            top: 4,
+                            right: 4,
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "#22c55e",
+                            boxShadow: "0 0 6px #22c55e",
+                            animation: "pulse 1s ease-in-out infinite",
+                        }} />
+                    )}
+                </div>
+            )}
+
+            {/* Remote camera tiles */}
+            {remoteTiles.map(sid => (
+                <RemoteCameraTile
+                    key={sid}
+                    socketId={sid}
+                    stream={peerStreams.get(sid)!}
+                    isSpeaking={speakingPeers.has(sid)}
+                    player={others.find(p => p.socketId === sid)}
+                />
+            ))}
+        </div>
+    )
+}
+
+function RemoteCameraTile({
+    socketId,
+    stream,
+    isSpeaking,
+    player,
+}: {
+    socketId: string
+    stream: MediaStream
+    isSpeaking: boolean
+    player?: SpacePlayer
+}) {
+    const videoRef = useRef<HTMLVideoElement>(null)
+
+    useEffect(() => {
+        if (videoRef.current && stream) {
+            videoRef.current.srcObject = stream
+        }
+    }, [stream])
+
+    const displayName = player?.name || "User"
+    const color = player?.color || "#00a6ff"
+
+    return (
+        <div style={{
+            position: "relative",
+            width: 144,
+            height: 100,
+            borderRadius: 10,
+            overflow: "hidden",
+            background: "#111",
+            border: `2px solid ${isSpeaking ? "#22c55e" : color + "60"}`,
+            boxShadow: isSpeaking ? "0 0 10px rgba(34,197,94,0.5)" : "0 2px 12px rgba(0,0,0,0.6)",
+            flexShrink: 0,
+            transition: "border 0.15s, box-shadow 0.15s",
+        }}>
+            <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+            <div style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "4px 6px",
+                background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+            }}>
+                {player?.isMuted && (
+                    <span style={{ fontSize: 10, color: "#ef4444" }}>🎙️✗</span>
+                )}
+                <span style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: "white",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    flex: 1,
+                }}>{displayName}</span>
+            </div>
+            {isSpeaking && (
+                <div style={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#22c55e",
+                    boxShadow: "0 0 6px #22c55e",
+                }} />
+            )}
+        </div>
+    )
+}
+
 // ── Minimap ──
 function Minimap({
     pos,
@@ -666,6 +881,7 @@ export function GameSpace({
     const inProximityRef = useRef(new Set<string>())
     const localStreamRef = useRef<MediaStream | null>(null)
     const speakingIntervalRef = useRef<NodeJS.Timeout | null>(null)
+    const localAnalyserRef = useRef<AnalyserNode | null>(null)
 
     // Zoom
     const zoomRef = useRef(1.0)
@@ -682,6 +898,7 @@ export function GameSpace({
     const [peerStreams, setPeerStreams] = useState(new Map<string, MediaStream>())
     const [peersWithCamera, setPeersWithCamera] = useState(new Set<string>())
     const [zoom, setZoom] = useState(1.0)
+    const [localSpeaking, setLocalSpeaking] = useState(false)
     const [myStatus, setMyStatus] = useState("")
     const [statusInput, setStatusInput] = useState("")
     const [showCustomInput, setShowCustomInput] = useState(false)
@@ -797,6 +1014,14 @@ export function GameSpace({
                 }
             })
             setSpeakingPeers(speaking)
+
+            // Local speaking detection
+            if (localAnalyserRef.current) {
+                const data = new Uint8Array(localAnalyserRef.current.frequencyBinCount)
+                localAnalyserRef.current.getByteFrequencyData(data)
+                const avg = data.reduce((a, b) => a + b, 0) / data.length
+                setLocalSpeaking(avg > SPEAKING_THRESHOLD)
+            }
         }, 200)
         return () => { if (speakingIntervalRef.current) clearInterval(speakingIntervalRef.current) }
     }, [])
@@ -864,6 +1089,16 @@ export function GameSpace({
                 localStreamRef.current = stream
                 setHasVideoCapability(true)
                 socket.emit("space-voice-join", { roomCode, userId, name: userName })
+                // Wire up local analyser for speaking detection
+                try {
+                    const actx = new AudioContext()
+                    const src = actx.createMediaStreamSource(stream)
+                    const analyser = actx.createAnalyser()
+                    analyser.fftSize = 512
+                    analyser.smoothingTimeConstant = 0.4
+                    src.connect(analyser)
+                    localAnalyserRef.current = analyser
+                } catch { }
             } catch {
                 // Video denied — try audio only
                 try {
@@ -872,10 +1107,25 @@ export function GameSpace({
                     })
                     localStreamRef.current = audioStream
                     socket.emit("space-voice-join", { roomCode, userId, name: userName })
+                    try {
+                        const actx = new AudioContext()
+                        const src = actx.createMediaStreamSource(audioStream)
+                        const analyser = actx.createAnalyser()
+                        analyser.fftSize = 512
+                        analyser.smoothingTimeConstant = 0.4
+                        src.connect(analyser)
+                        localAnalyserRef.current = analyser
+                    } catch { }
                 } catch { /* no mic */ }
             }
         }
         initMedia()
+
+        // Clear stale proximity voice listeners before re-registering
+        socket.off("space-voice-peer-joined")
+        socket.off("space-voice-signal")
+        socket.off("space-voice-peer-left")
+        socket.off("space-camera-state")
 
         // Proximity voice events
         socket.on("space-voice-peer-joined", (_data: { socketId: string; userId: string; name: string }) => {
@@ -1718,6 +1968,21 @@ export function GameSpace({
                     >+</button>
                 </div>
             </div>
+
+            {/* ── Camera Corner Overlay ── */}
+            <CameraCorner
+                localStream={localStreamRef.current}
+                cameraOn={cameraOn}
+                isMuted={isMuted}
+                localSpeaking={localSpeaking && !isMuted}
+                userName={userName}
+                myColor={myColor}
+                peerStreams={peerStreams}
+                peersWithCamera={peersWithCamera}
+                nearbySocketIds={nearbySocketIds}
+                speakingPeers={speakingPeers}
+                others={others}
+            />
 
             {/* ── Minimap ── */}
             <Minimap pos={pos} others={others} myColor={myColor} zones={zones} />

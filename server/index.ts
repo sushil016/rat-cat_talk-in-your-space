@@ -2,11 +2,32 @@ import { createServer } from "http"
 import { Server } from "socket.io"
 
 const httpServer = createServer()
+
+const ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://rat-cat.vercel.app",
+    "https://ratcat.sushilsahani.dev",
+    ...(process.env.NEXT_PUBLIC_APP_URL ? [process.env.NEXT_PUBLIC_APP_URL] : []),
+]
+
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+        origin: (origin, callback) => {
+            // Allow requests with no origin (server-to-server, curl, etc.)
+            if (!origin) return callback(null, true)
+            if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true)
+            // Allow any vercel preview deploy for this project
+            if (origin.endsWith(".vercel.app") || origin.endsWith(".sushilsahani.dev")) {
+                return callback(null, true)
+            }
+            callback(new Error(`CORS: origin ${origin} not allowed`))
+        },
         methods: ["GET", "POST"],
+        credentials: true,
     },
+    pingTimeout: 60000,
+    pingInterval: 25000,
 })
 
 interface RoomParticipant {
