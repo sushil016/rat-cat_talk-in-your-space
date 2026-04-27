@@ -277,6 +277,36 @@
   animation: draw-line 2s ease-out forwards;
 }
 
+/* Hero word-swap character animation */
+@keyframes char-in {
+  from {
+    opacity: 0;
+    transform: translateY(40%) scaleY(0.6);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    filter: blur(0);
+  }
+}
+
+.animate-char-in {
+  animation: char-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Sphere orbit spin */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Sphere centre pulse */
+@keyframes pulse-sphere {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
 /* Floating emojis */
 @keyframes float-up {
   0% {
